@@ -1,0 +1,28 @@
+html,
+body,
+#root,
+.App {
+  background-color: #121212;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+table.table {
+  color: white;
+}
+
+textarea.form-control {
+  background: #383838;
+  border: 1px solid #505050;
+  color: #e0e0e0;
+  outline: none;
+}
+
+textarea.form-control:focus {
+  background: #404040;
+  border-color: #707070;
+  color: white;
+}
