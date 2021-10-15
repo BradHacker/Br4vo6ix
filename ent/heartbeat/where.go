@@ -100,6 +100,13 @@ func UUID(v string) predicate.Heartbeat {
 	})
 }
 
+// Hostname applies equality check predicate on the "hostname" field. It's identical to HostnameEQ.
+func Hostname(v string) predicate.Heartbeat {
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHostname), v))
+	})
+}
+
 // IP applies equality check predicate on the "ip" field. It's identical to IPEQ.
 func IP(v string) predicate.Heartbeat {
 	return predicate.Heartbeat(func(s *sql.Selector) {
@@ -236,6 +243,117 @@ func UUIDEqualFold(v string) predicate.Heartbeat {
 func UUIDContainsFold(v string) predicate.Heartbeat {
 	return predicate.Heartbeat(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldUUID), v))
+	})
+}
+
+// HostnameEQ applies the EQ predicate on the "hostname" field.
+func HostnameEQ(v string) predicate.Heartbeat {
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameNEQ applies the NEQ predicate on the "hostname" field.
+func HostnameNEQ(v string) predicate.Heartbeat {
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameIn applies the In predicate on the "hostname" field.
+func HostnameIn(vs ...string) predicate.Heartbeat {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldHostname), v...))
+	})
+}
+
+// HostnameNotIn applies the NotIn predicate on the "hostname" field.
+func HostnameNotIn(vs ...string) predicate.Heartbeat {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldHostname), v...))
+	})
+}
+
+// HostnameGT applies the GT predicate on the "hostname" field.
+func HostnameGT(v string) predicate.Heartbeat {
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameGTE applies the GTE predicate on the "hostname" field.
+func HostnameGTE(v string) predicate.Heartbeat {
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameLT applies the LT predicate on the "hostname" field.
+func HostnameLT(v string) predicate.Heartbeat {
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameLTE applies the LTE predicate on the "hostname" field.
+func HostnameLTE(v string) predicate.Heartbeat {
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameContains applies the Contains predicate on the "hostname" field.
+func HostnameContains(v string) predicate.Heartbeat {
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameHasPrefix applies the HasPrefix predicate on the "hostname" field.
+func HostnameHasPrefix(v string) predicate.Heartbeat {
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameHasSuffix applies the HasSuffix predicate on the "hostname" field.
+func HostnameHasSuffix(v string) predicate.Heartbeat {
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameEqualFold applies the EqualFold predicate on the "hostname" field.
+func HostnameEqualFold(v string) predicate.Heartbeat {
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameContainsFold applies the ContainsFold predicate on the "hostname" field.
+func HostnameContainsFold(v string) predicate.Heartbeat {
+	return predicate.Heartbeat(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldHostname), v))
 	})
 }
 

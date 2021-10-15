@@ -6,6 +6,8 @@ scalar Time
 
 type Implant {
   uuid: String!
+  hostname: String!
+  ip: String!
   machine_id: String!
   last_seen_at: Time
   heartbeats: [Heartbeat!]!
@@ -20,6 +22,7 @@ enum TaskType {
 
 type Heartbeat {
   uuid: String!
+  hostname: String!
   ip: String!
   port: Int!
   pid: Int!
@@ -38,6 +41,7 @@ type Task {
 
 type Query {
   implants: [Implant!]!
+  implant(implantUuid: String!): Implant!
   tasks(implantUuid: String!): [Task!]!
 }
 

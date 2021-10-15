@@ -46,6 +46,14 @@ func (r *queryResolver) Implants(ctx context.Context) ([]*ent.Implant, error) {
 	return implants, nil
 }
 
+func (r *queryResolver) Implant(ctx context.Context, implantUUID string) (*ent.Implant, error) {
+	implant, err := r.client.Implant.Query().Where(implant.UUIDEQ(implantUUID)).Only(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("error querying implant: %v", err)
+	}
+	return implant, nil
+}
+
 func (r *queryResolver) Tasks(ctx context.Context, implantUUID string) ([]*ent.Task, error) {
 	tasks, err := r.client.Implant.Query().Where(implant.UUIDEQ(implantUUID)).QueryTasks().All(ctx)
 	if err != nil {

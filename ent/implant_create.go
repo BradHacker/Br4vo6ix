@@ -34,6 +34,18 @@ func (ic *ImplantCreate) SetMachineID(s string) *ImplantCreate {
 	return ic
 }
 
+// SetHostname sets the "hostname" field.
+func (ic *ImplantCreate) SetHostname(s string) *ImplantCreate {
+	ic.mutation.SetHostname(s)
+	return ic
+}
+
+// SetIP sets the "ip" field.
+func (ic *ImplantCreate) SetIP(s string) *ImplantCreate {
+	ic.mutation.SetIP(s)
+	return ic
+}
+
 // SetLastSeenAt sets the "last_seen_at" field.
 func (ic *ImplantCreate) SetLastSeenAt(t time.Time) *ImplantCreate {
 	ic.mutation.SetLastSeenAt(t)
@@ -163,6 +175,12 @@ func (ic *ImplantCreate) check() error {
 	if _, ok := ic.mutation.MachineID(); !ok {
 		return &ValidationError{Name: "machine_id", err: errors.New(`ent: missing required field "machine_id"`)}
 	}
+	if _, ok := ic.mutation.Hostname(); !ok {
+		return &ValidationError{Name: "hostname", err: errors.New(`ent: missing required field "hostname"`)}
+	}
+	if _, ok := ic.mutation.IP(); !ok {
+		return &ValidationError{Name: "ip", err: errors.New(`ent: missing required field "ip"`)}
+	}
 	if _, ok := ic.mutation.LastSeenAt(); !ok {
 		return &ValidationError{Name: "last_seen_at", err: errors.New(`ent: missing required field "last_seen_at"`)}
 	}
@@ -208,6 +226,22 @@ func (ic *ImplantCreate) createSpec() (*Implant, *sqlgraph.CreateSpec) {
 			Column: implant.FieldMachineID,
 		})
 		_node.MachineID = value
+	}
+	if value, ok := ic.mutation.Hostname(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: implant.FieldHostname,
+		})
+		_node.Hostname = value
+	}
+	if value, ok := ic.mutation.IP(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: implant.FieldIP,
+		})
+		_node.IP = value
 	}
 	if value, ok := ic.mutation.LastSeenAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

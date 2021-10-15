@@ -107,6 +107,20 @@ func MachineID(v string) predicate.Implant {
 	})
 }
 
+// Hostname applies equality check predicate on the "hostname" field. It's identical to HostnameEQ.
+func Hostname(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHostname), v))
+	})
+}
+
+// IP applies equality check predicate on the "ip" field. It's identical to IPEQ.
+func IP(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldIP), v))
+	})
+}
+
 // LastSeenAt applies equality check predicate on the "last_seen_at" field. It's identical to LastSeenAtEQ.
 func LastSeenAt(v time.Time) predicate.Implant {
 	return predicate.Implant(func(s *sql.Selector) {
@@ -333,6 +347,228 @@ func MachineIDEqualFold(v string) predicate.Implant {
 func MachineIDContainsFold(v string) predicate.Implant {
 	return predicate.Implant(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldMachineID), v))
+	})
+}
+
+// HostnameEQ applies the EQ predicate on the "hostname" field.
+func HostnameEQ(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameNEQ applies the NEQ predicate on the "hostname" field.
+func HostnameNEQ(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameIn applies the In predicate on the "hostname" field.
+func HostnameIn(vs ...string) predicate.Implant {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Implant(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldHostname), v...))
+	})
+}
+
+// HostnameNotIn applies the NotIn predicate on the "hostname" field.
+func HostnameNotIn(vs ...string) predicate.Implant {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Implant(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldHostname), v...))
+	})
+}
+
+// HostnameGT applies the GT predicate on the "hostname" field.
+func HostnameGT(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameGTE applies the GTE predicate on the "hostname" field.
+func HostnameGTE(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameLT applies the LT predicate on the "hostname" field.
+func HostnameLT(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameLTE applies the LTE predicate on the "hostname" field.
+func HostnameLTE(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameContains applies the Contains predicate on the "hostname" field.
+func HostnameContains(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameHasPrefix applies the HasPrefix predicate on the "hostname" field.
+func HostnameHasPrefix(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameHasSuffix applies the HasSuffix predicate on the "hostname" field.
+func HostnameHasSuffix(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameEqualFold applies the EqualFold predicate on the "hostname" field.
+func HostnameEqualFold(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldHostname), v))
+	})
+}
+
+// HostnameContainsFold applies the ContainsFold predicate on the "hostname" field.
+func HostnameContainsFold(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldHostname), v))
+	})
+}
+
+// IPEQ applies the EQ predicate on the "ip" field.
+func IPEQ(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldIP), v))
+	})
+}
+
+// IPNEQ applies the NEQ predicate on the "ip" field.
+func IPNEQ(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldIP), v))
+	})
+}
+
+// IPIn applies the In predicate on the "ip" field.
+func IPIn(vs ...string) predicate.Implant {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Implant(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldIP), v...))
+	})
+}
+
+// IPNotIn applies the NotIn predicate on the "ip" field.
+func IPNotIn(vs ...string) predicate.Implant {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Implant(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldIP), v...))
+	})
+}
+
+// IPGT applies the GT predicate on the "ip" field.
+func IPGT(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldIP), v))
+	})
+}
+
+// IPGTE applies the GTE predicate on the "ip" field.
+func IPGTE(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldIP), v))
+	})
+}
+
+// IPLT applies the LT predicate on the "ip" field.
+func IPLT(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldIP), v))
+	})
+}
+
+// IPLTE applies the LTE predicate on the "ip" field.
+func IPLTE(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldIP), v))
+	})
+}
+
+// IPContains applies the Contains predicate on the "ip" field.
+func IPContains(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldIP), v))
+	})
+}
+
+// IPHasPrefix applies the HasPrefix predicate on the "ip" field.
+func IPHasPrefix(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldIP), v))
+	})
+}
+
+// IPHasSuffix applies the HasSuffix predicate on the "ip" field.
+func IPHasSuffix(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldIP), v))
+	})
+}
+
+// IPEqualFold applies the EqualFold predicate on the "ip" field.
+func IPEqualFold(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldIP), v))
+	})
+}
+
+// IPContainsFold applies the ContainsFold predicate on the "ip" field.
+func IPContainsFold(v string) predicate.Implant {
+	return predicate.Implant(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldIP), v))
 	})
 }
 

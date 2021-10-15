@@ -19,6 +19,8 @@ type Heartbeat struct {
 	ID int `json:"id,omitempty"`
 	// UUID holds the value of the "uuid" field.
 	UUID string `json:"uuid,omitempty"`
+	// Hostname holds the value of the "hostname" field.
+	Hostname string `json:"hostname,omitempty"`
 	// IP holds the value of the "ip" field.
 	IP string `json:"ip,omitempty"`
 	// Port holds the value of the "port" field.
@@ -63,7 +65,7 @@ func (*Heartbeat) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case heartbeat.FieldID, heartbeat.FieldPort, heartbeat.FieldPid:
 			values[i] = new(sql.NullInt64)
-		case heartbeat.FieldUUID, heartbeat.FieldIP:
+		case heartbeat.FieldUUID, heartbeat.FieldHostname, heartbeat.FieldIP:
 			values[i] = new(sql.NullString)
 		case heartbeat.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -95,6 +97,12 @@ func (h *Heartbeat) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field uuid", values[i])
 			} else if value.Valid {
 				h.UUID = value.String
+			}
+		case heartbeat.FieldHostname:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field hostname", values[i])
+			} else if value.Valid {
+				h.Hostname = value.String
 			}
 		case heartbeat.FieldIP:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -162,6 +170,8 @@ func (h *Heartbeat) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", h.ID))
 	builder.WriteString(", uuid=")
 	builder.WriteString(h.UUID)
+	builder.WriteString(", hostname=")
+	builder.WriteString(h.Hostname)
 	builder.WriteString(", ip=")
 	builder.WriteString(h.IP)
 	builder.WriteString(", port=")

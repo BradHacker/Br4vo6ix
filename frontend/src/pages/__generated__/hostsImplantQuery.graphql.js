@@ -8,26 +8,30 @@
 
 /*::
 import type { ConcreteRequest } from 'relay-runtime';
-export type homeImplantsQueryVariables = {||};
-export type homeImplantsQueryResponse = {|
-  +implants: $ReadOnlyArray<{|
+export type hostsImplantQueryVariables = {|
+  implantId: string
+|};
+export type hostsImplantQueryResponse = {|
+  +implant: {|
     +uuid: string,
     +hostname: string,
     +ip: string,
     +machine_id: string,
     +last_seen_at: ?any,
-  |}>
+  |}
 |};
-export type homeImplantsQuery = {|
-  variables: homeImplantsQueryVariables,
-  response: homeImplantsQueryResponse,
+export type hostsImplantQuery = {|
+  variables: hostsImplantQueryVariables,
+  response: hostsImplantQueryResponse,
 |};
 */
 
 
 /*
-query homeImplantsQuery {
-  implants {
+query hostsImplantQuery(
+  $implantId: String!
+) {
+  implant(implantUuid: $implantId) {
     uuid
     hostname
     ip
@@ -40,12 +44,25 @@ query homeImplantsQuery {
 const node/*: ConcreteRequest*/ = (function(){
 var v0 = [
   {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "implantId"
+  }
+],
+v1 = [
+  {
     "alias": null,
-    "args": null,
+    "args": [
+      {
+        "kind": "Variable",
+        "name": "implantUuid",
+        "variableName": "implantId"
+      }
+    ],
     "concreteType": "Implant",
     "kind": "LinkedField",
-    "name": "implants",
-    "plural": true,
+    "name": "implant",
+    "plural": false,
     "selections": [
       {
         "alias": null,
@@ -88,32 +105,32 @@ var v0 = [
 ];
 return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "homeImplantsQuery",
-    "selections": (v0/*: any*/),
+    "name": "hostsImplantQuery",
+    "selections": (v1/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "homeImplantsQuery",
-    "selections": (v0/*: any*/)
+    "name": "hostsImplantQuery",
+    "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "ceea0c57945a139b5a86b3e41e5be3de",
+    "cacheID": "6c6e139250df40aa87b28aca74b20dbc",
     "id": null,
     "metadata": {},
-    "name": "homeImplantsQuery",
+    "name": "hostsImplantQuery",
     "operationKind": "query",
-    "text": "query homeImplantsQuery {\n  implants {\n    uuid\n    hostname\n    ip\n    machine_id\n    last_seen_at\n  }\n}\n"
+    "text": "query hostsImplantQuery(\n  $implantId: String!\n) {\n  implant(implantUuid: $implantId) {\n    uuid\n    hostname\n    ip\n    machine_id\n    last_seen_at\n  }\n}\n"
   }
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'eca9f8c851d36eca8e9d59a4047875b9';
+(node/*: any*/).hash = '9f36c0780dc146fdb641089a8dafc637';
 
 module.exports = node;

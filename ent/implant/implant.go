@@ -15,6 +15,10 @@ const (
 	FieldUUID = "uuid"
 	// FieldMachineID holds the string denoting the machine_id field in the database.
 	FieldMachineID = "machine_id"
+	// FieldHostname holds the string denoting the hostname field in the database.
+	FieldHostname = "hostname"
+	// FieldIP holds the string denoting the ip field in the database.
+	FieldIP = "ip"
 	// FieldLastSeenAt holds the string denoting the last_seen_at field in the database.
 	FieldLastSeenAt = "last_seen_at"
 	// EdgeHeartbeats holds the string denoting the heartbeats edge name in mutations.
@@ -44,6 +48,8 @@ var Columns = []string{
 	FieldID,
 	FieldUUID,
 	FieldMachineID,
+	FieldHostname,
+	FieldIP,
 	FieldLastSeenAt,
 }
 

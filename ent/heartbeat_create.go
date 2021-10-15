@@ -27,6 +27,12 @@ func (hc *HeartbeatCreate) SetUUID(s string) *HeartbeatCreate {
 	return hc
 }
 
+// SetHostname sets the "hostname" field.
+func (hc *HeartbeatCreate) SetHostname(s string) *HeartbeatCreate {
+	hc.mutation.SetHostname(s)
+	return hc
+}
+
 // SetIP sets the "ip" field.
 func (hc *HeartbeatCreate) SetIP(s string) *HeartbeatCreate {
 	hc.mutation.SetIP(s)
@@ -152,6 +158,9 @@ func (hc *HeartbeatCreate) check() error {
 	if _, ok := hc.mutation.UUID(); !ok {
 		return &ValidationError{Name: "uuid", err: errors.New(`ent: missing required field "uuid"`)}
 	}
+	if _, ok := hc.mutation.Hostname(); !ok {
+		return &ValidationError{Name: "hostname", err: errors.New(`ent: missing required field "hostname"`)}
+	}
 	if _, ok := hc.mutation.IP(); !ok {
 		return &ValidationError{Name: "ip", err: errors.New(`ent: missing required field "ip"`)}
 	}
@@ -201,6 +210,14 @@ func (hc *HeartbeatCreate) createSpec() (*Heartbeat, *sqlgraph.CreateSpec) {
 			Column: heartbeat.FieldUUID,
 		})
 		_node.UUID = value
+	}
+	if value, ok := hc.mutation.Hostname(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: heartbeat.FieldHostname,
+		})
+		_node.Hostname = value
 	}
 	if value, ok := hc.mutation.IP(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

@@ -17,6 +17,7 @@ type Heartbeat struct {
 func (Heartbeat) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("uuid").Unique(),
+		field.String("hostname"),
 		field.String("ip"),
 		field.Int("port"),
 		field.Int("pid"),

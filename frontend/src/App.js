@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Switch, NavLink } from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
 
 import Home from './pages/home';
+import Hosts from './pages/hosts';
+import LoadingScreen from './components/loading';
 import { RelayEnvironmentProvider } from 'react-relay/hooks';
 import relayEnvironment from './relay-environment';
 
@@ -52,9 +54,12 @@ const App = (props) => {
               </div>
             </div>
           </nav>
-          <Switch>
-            <Route path="/" component={Home} />
-          </Switch>
+          <Suspense fallback={<LoadingScreen />}>
+            <Switch>
+              <Route path="/hosts/:implantId" component={Hosts} />
+              <Route path="/" component={Home} />
+            </Switch>
+          </Suspense>
         </div>
       </Router>
     </RelayEnvironmentProvider>

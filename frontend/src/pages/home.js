@@ -7,6 +7,7 @@ import LoadingScreen from '../components/loading';
 import relayEnvironment from '../relay-environment';
 
 import './home.css';
+import { Link, NavLink } from 'react-router-dom';
 
 const { Suspense } = React;
 
@@ -14,16 +15,10 @@ const GetImplantsQuery = graphql`
   query homeImplantsQuery {
     implants {
       uuid
+      hostname
+      ip
       machine_id
       last_seen_at
-      tasks {
-        uuid
-        type
-        payload
-        stdout
-        stderr
-        created_at
-      }
     }
   }
 `;
@@ -57,7 +52,8 @@ const Home = (props) => {
     <table className="table">
       <thead>
         <tr>
-          <th scope="col">machine_id</th>
+          <th scope="col">host</th>
+          <th scope="col">ip</th>
           <th scope="col">last_seen_at</th>
           <th scope="col">controls</th>
         </tr>
@@ -67,26 +63,21 @@ const Home = (props) => {
           data.implants.map((implant, i) => (
             <React.Fragment key={`implant_${i}`}>
               <tr>
-                <td scope="row">{implant.machine_id}</td>
+                <td scope="row">{implant.hostname}</td>
+                <td>{implant.ip}</td>
                 <td>{implant.last_seen_at}</td>
                 <td>
                   <div className="btn-group" role="group" aria-label="Implant Controls">
-                    <button type="button" className="btn btn-outline-secondary" onClick={() => toggleExpansion(implant.uuid)}>
+                    {/*<button type="button" className="btn btn-outline-secondary" onClick={() => toggleExpansion(implant.uuid)}>
                       <i className={`fa fa-chevron-${checkExpanded(implant.uuid) ? 'up' : 'down'}`}></i>
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-outline-danger"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      onClick={() => props.setSelectedImplant(implant.uuid)}
-                    >
+                    </button>*/}
+                    <Link to={`/hosts/${implant.uuid}`} className="btn btn-outline-danger">
                       <i className="fa fa-terminal"></i>
-                    </button>
+                    </Link>
                   </div>
                 </td>
               </tr>
-              {implant.tasks.length > 0 ? (
+              {/*implant.tasks.length > 0 ? (
                 implant.tasks.map((task, i) => (
                   <tr key={`implant_${implant.uuid}_task_${i}`} className={checkExpanded(implant.uuid) ? 'expanded' : 'collapsed'}>
                     <td colSpan="4" className="task-td">
@@ -104,7 +95,7 @@ const Home = (props) => {
                 <tr>
                   <td>No tasks :(</td>
                 </tr>
-              )}
+                  )*/}
             </React.Fragment>
           ))}
       </tbody>
@@ -114,8 +105,6 @@ const Home = (props) => {
 
 const HomeRoot = (props) => {
   const [selectedImplant, setSelectedImplant] = useState('');
-  const [implantCommand, setImplantCommand] = useState('');
-  const [queryRes, setQueryRes] = useState(null);
   const [queryRef, loadQuery] = useQueryLoader(GetImplantsQuery, preloadedQuery);
 
   const refetch = useCallback(() => {
@@ -129,35 +118,9 @@ const HomeRoot = (props) => {
     return () => clearInterval(pid);
   });
 
-  const createNewTask = () => {
-    return commitMutation(relayEnvironment, {
-      mutation: NewTaskMutation,
-      variables: {
-        implantId: selectedImplant,
-        type: 'CMD',
-        payload: implantCommand
-      },
-      onCompleted: (response) => {
-        console.log(response);
-        setQueryRes({
-          type: 'success',
-          message: `Successfully scheduled task`
-        });
-        refetch();
-      },
-      onError: (error) => {
-        console.error(error);
-        setQueryRes({
-          type: 'danger',
-          message: `Error scheduling task`
-        });
-      }
-    });
-  };
-
   return (
     <div className="container-fluid p-4">
-      <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      {/*<div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog">
           <div className="modal-content bg-dark">
             <div className="modal-header">
@@ -193,7 +156,7 @@ const HomeRoot = (props) => {
             </div>
           </div>
         </div>
-      </div>
+              </div>*/}
       <div className="row">
         <div className="col">
           <h1>Home</h1>

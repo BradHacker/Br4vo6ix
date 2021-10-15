@@ -37,6 +37,7 @@ type HeartbeatMutation struct {
 	typ            string
 	id             *int
 	uuid           *string
+	hostname       *string
 	ip             *string
 	port           *int
 	addport        *int
@@ -164,6 +165,42 @@ func (m *HeartbeatMutation) OldUUID(ctx context.Context) (v string, err error) {
 // ResetUUID resets all changes to the "uuid" field.
 func (m *HeartbeatMutation) ResetUUID() {
 	m.uuid = nil
+}
+
+// SetHostname sets the "hostname" field.
+func (m *HeartbeatMutation) SetHostname(s string) {
+	m.hostname = &s
+}
+
+// Hostname returns the value of the "hostname" field in the mutation.
+func (m *HeartbeatMutation) Hostname() (r string, exists bool) {
+	v := m.hostname
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHostname returns the old "hostname" field's value of the Heartbeat entity.
+// If the Heartbeat object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *HeartbeatMutation) OldHostname(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldHostname is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldHostname requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHostname: %w", err)
+	}
+	return oldValue.Hostname, nil
+}
+
+// ResetHostname resets all changes to the "hostname" field.
+func (m *HeartbeatMutation) ResetHostname() {
+	m.hostname = nil
 }
 
 // SetIP sets the "ip" field.
@@ -408,9 +445,12 @@ func (m *HeartbeatMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *HeartbeatMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.uuid != nil {
 		fields = append(fields, heartbeat.FieldUUID)
+	}
+	if m.hostname != nil {
+		fields = append(fields, heartbeat.FieldHostname)
 	}
 	if m.ip != nil {
 		fields = append(fields, heartbeat.FieldIP)
@@ -434,6 +474,8 @@ func (m *HeartbeatMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case heartbeat.FieldUUID:
 		return m.UUID()
+	case heartbeat.FieldHostname:
+		return m.Hostname()
 	case heartbeat.FieldIP:
 		return m.IP()
 	case heartbeat.FieldPort:
@@ -453,6 +495,8 @@ func (m *HeartbeatMutation) OldField(ctx context.Context, name string) (ent.Valu
 	switch name {
 	case heartbeat.FieldUUID:
 		return m.OldUUID(ctx)
+	case heartbeat.FieldHostname:
+		return m.OldHostname(ctx)
 	case heartbeat.FieldIP:
 		return m.OldIP(ctx)
 	case heartbeat.FieldPort:
@@ -476,6 +520,13 @@ func (m *HeartbeatMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUUID(v)
+		return nil
+	case heartbeat.FieldHostname:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHostname(v)
 		return nil
 	case heartbeat.FieldIP:
 		v, ok := value.(string)
@@ -584,6 +635,9 @@ func (m *HeartbeatMutation) ResetField(name string) error {
 	case heartbeat.FieldUUID:
 		m.ResetUUID()
 		return nil
+	case heartbeat.FieldHostname:
+		m.ResetHostname()
+		return nil
 	case heartbeat.FieldIP:
 		m.ResetIP()
 		return nil
@@ -684,6 +738,8 @@ type ImplantMutation struct {
 	id                *int
 	uuid              *string
 	machine_id        *string
+	hostname          *string
+	ip                *string
 	last_seen_at      *time.Time
 	clearedFields     map[string]struct{}
 	heartbeats        map[int]struct{}
@@ -846,6 +902,78 @@ func (m *ImplantMutation) OldMachineID(ctx context.Context) (v string, err error
 // ResetMachineID resets all changes to the "machine_id" field.
 func (m *ImplantMutation) ResetMachineID() {
 	m.machine_id = nil
+}
+
+// SetHostname sets the "hostname" field.
+func (m *ImplantMutation) SetHostname(s string) {
+	m.hostname = &s
+}
+
+// Hostname returns the value of the "hostname" field in the mutation.
+func (m *ImplantMutation) Hostname() (r string, exists bool) {
+	v := m.hostname
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHostname returns the old "hostname" field's value of the Implant entity.
+// If the Implant object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ImplantMutation) OldHostname(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldHostname is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldHostname requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHostname: %w", err)
+	}
+	return oldValue.Hostname, nil
+}
+
+// ResetHostname resets all changes to the "hostname" field.
+func (m *ImplantMutation) ResetHostname() {
+	m.hostname = nil
+}
+
+// SetIP sets the "ip" field.
+func (m *ImplantMutation) SetIP(s string) {
+	m.ip = &s
+}
+
+// IP returns the value of the "ip" field in the mutation.
+func (m *ImplantMutation) IP() (r string, exists bool) {
+	v := m.ip
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIP returns the old "ip" field's value of the Implant entity.
+// If the Implant object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ImplantMutation) OldIP(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldIP is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldIP requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIP: %w", err)
+	}
+	return oldValue.IP, nil
+}
+
+// ResetIP resets all changes to the "ip" field.
+func (m *ImplantMutation) ResetIP() {
+	m.ip = nil
 }
 
 // SetLastSeenAt sets the "last_seen_at" field.
@@ -1011,12 +1139,18 @@ func (m *ImplantMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ImplantMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 5)
 	if m.uuid != nil {
 		fields = append(fields, implant.FieldUUID)
 	}
 	if m.machine_id != nil {
 		fields = append(fields, implant.FieldMachineID)
+	}
+	if m.hostname != nil {
+		fields = append(fields, implant.FieldHostname)
+	}
+	if m.ip != nil {
+		fields = append(fields, implant.FieldIP)
 	}
 	if m.last_seen_at != nil {
 		fields = append(fields, implant.FieldLastSeenAt)
@@ -1033,6 +1167,10 @@ func (m *ImplantMutation) Field(name string) (ent.Value, bool) {
 		return m.UUID()
 	case implant.FieldMachineID:
 		return m.MachineID()
+	case implant.FieldHostname:
+		return m.Hostname()
+	case implant.FieldIP:
+		return m.IP()
 	case implant.FieldLastSeenAt:
 		return m.LastSeenAt()
 	}
@@ -1048,6 +1186,10 @@ func (m *ImplantMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldUUID(ctx)
 	case implant.FieldMachineID:
 		return m.OldMachineID(ctx)
+	case implant.FieldHostname:
+		return m.OldHostname(ctx)
+	case implant.FieldIP:
+		return m.OldIP(ctx)
 	case implant.FieldLastSeenAt:
 		return m.OldLastSeenAt(ctx)
 	}
@@ -1072,6 +1214,20 @@ func (m *ImplantMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetMachineID(v)
+		return nil
+	case implant.FieldHostname:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHostname(v)
+		return nil
+	case implant.FieldIP:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIP(v)
 		return nil
 	case implant.FieldLastSeenAt:
 		v, ok := value.(time.Time)
@@ -1134,6 +1290,12 @@ func (m *ImplantMutation) ResetField(name string) error {
 		return nil
 	case implant.FieldMachineID:
 		m.ResetMachineID()
+		return nil
+	case implant.FieldHostname:
+		m.ResetHostname()
+		return nil
+	case implant.FieldIP:
+		m.ResetIP()
 		return nil
 	case implant.FieldLastSeenAt:
 		m.ResetLastSeenAt()

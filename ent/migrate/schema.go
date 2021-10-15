@@ -12,6 +12,7 @@ var (
 	HeartbeatsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "uuid", Type: field.TypeString, Unique: true},
+		{Name: "hostname", Type: field.TypeString},
 		{Name: "ip", Type: field.TypeString},
 		{Name: "port", Type: field.TypeInt},
 		{Name: "pid", Type: field.TypeInt},
@@ -26,7 +27,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "heartbeats_implants_implant",
-				Columns:    []*schema.Column{HeartbeatsColumns[6]},
+				Columns:    []*schema.Column{HeartbeatsColumns[7]},
 				RefColumns: []*schema.Column{ImplantsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -37,6 +38,8 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "uuid", Type: field.TypeString, Unique: true},
 		{Name: "machine_id", Type: field.TypeString},
+		{Name: "hostname", Type: field.TypeString},
+		{Name: "ip", Type: field.TypeString},
 		{Name: "last_seen_at", Type: field.TypeTime},
 	}
 	// ImplantsTable holds the schema information for the "implants" table.

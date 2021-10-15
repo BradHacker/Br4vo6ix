@@ -18,6 +18,8 @@ func (Implant) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("uuid").Unique(),
 		field.String("machine_id"),
+		field.String("hostname"),
+		field.String("ip"),
 		field.Time("last_seen_at").Default(time.Now),
 	}
 }

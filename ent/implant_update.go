@@ -41,6 +41,18 @@ func (iu *ImplantUpdate) SetMachineID(s string) *ImplantUpdate {
 	return iu
 }
 
+// SetHostname sets the "hostname" field.
+func (iu *ImplantUpdate) SetHostname(s string) *ImplantUpdate {
+	iu.mutation.SetHostname(s)
+	return iu
+}
+
+// SetIP sets the "ip" field.
+func (iu *ImplantUpdate) SetIP(s string) *ImplantUpdate {
+	iu.mutation.SetIP(s)
+	return iu
+}
+
 // SetLastSeenAt sets the "last_seen_at" field.
 func (iu *ImplantUpdate) SetLastSeenAt(t time.Time) *ImplantUpdate {
 	iu.mutation.SetLastSeenAt(t)
@@ -218,6 +230,20 @@ func (iu *ImplantUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: implant.FieldMachineID,
 		})
 	}
+	if value, ok := iu.mutation.Hostname(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: implant.FieldHostname,
+		})
+	}
+	if value, ok := iu.mutation.IP(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: implant.FieldIP,
+		})
+	}
 	if value, ok := iu.mutation.LastSeenAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -361,6 +387,18 @@ func (iuo *ImplantUpdateOne) SetUUID(s string) *ImplantUpdateOne {
 // SetMachineID sets the "machine_id" field.
 func (iuo *ImplantUpdateOne) SetMachineID(s string) *ImplantUpdateOne {
 	iuo.mutation.SetMachineID(s)
+	return iuo
+}
+
+// SetHostname sets the "hostname" field.
+func (iuo *ImplantUpdateOne) SetHostname(s string) *ImplantUpdateOne {
+	iuo.mutation.SetHostname(s)
+	return iuo
+}
+
+// SetIP sets the "ip" field.
+func (iuo *ImplantUpdateOne) SetIP(s string) *ImplantUpdateOne {
+	iuo.mutation.SetIP(s)
 	return iuo
 }
 
@@ -563,6 +601,20 @@ func (iuo *ImplantUpdateOne) sqlSave(ctx context.Context) (_node *Implant, err e
 			Type:   field.TypeString,
 			Value:  value,
 			Column: implant.FieldMachineID,
+		})
+	}
+	if value, ok := iuo.mutation.Hostname(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: implant.FieldHostname,
+		})
+	}
+	if value, ok := iuo.mutation.IP(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: implant.FieldIP,
 		})
 	}
 	if value, ok := iuo.mutation.LastSeenAt(); ok {

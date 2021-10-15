@@ -48,6 +48,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Heartbeat struct {
 		CreatedAt func(childComplexity int) int
+		Hostname  func(childComplexity int) int
 		IP        func(childComplexity int) int
 		Pid       func(childComplexity int) int
 		Port      func(childComplexity int) int
@@ -56,6 +57,8 @@ type ComplexityRoot struct {
 
 	Implant struct {
 		Heartbeats func(childComplexity int) int
+		Hostname   func(childComplexity int) int
+		IP         func(childComplexity int) int
 		LastSeenAt func(childComplexity int) int
 		MachineID  func(childComplexity int) int
 		Tasks      func(childComplexity int) int
@@ -67,6 +70,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
+		Implant  func(childComplexity int, implantUUID string) int
 		Implants func(childComplexity int) int
 		Tasks    func(childComplexity int, implantUUID string) int
 	}
@@ -87,6 +91,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Implants(ctx context.Context) ([]*ent.Implant, error)
+	Implant(ctx context.Context, implantUUID string) (*ent.Implant, error)
 	Tasks(ctx context.Context, implantUUID string) ([]*ent.Task, error)
 }
 type TaskResolver interface {
@@ -114,6 +119,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Heartbeat.CreatedAt(childComplexity), true
+
+	case "Heartbeat.hostname":
+		if e.complexity.Heartbeat.Hostname == nil {
+			break
+		}
+
+		return e.complexity.Heartbeat.Hostname(childComplexity), true
 
 	case "Heartbeat.ip":
 		if e.complexity.Heartbeat.IP == nil {
@@ -149,6 +161,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Implant.Heartbeats(childComplexity), true
+
+	case "Implant.hostname":
+		if e.complexity.Implant.Hostname == nil {
+			break
+		}
+
+		return e.complexity.Implant.Hostname(childComplexity), true
+
+	case "Implant.ip":
+		if e.complexity.Implant.IP == nil {
+			break
+		}
+
+		return e.complexity.Implant.IP(childComplexity), true
 
 	case "Implant.last_seen_at":
 		if e.complexity.Implant.LastSeenAt == nil {
@@ -189,6 +215,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.ScheduleTask(childComplexity, args["input"].(model.NewTaskInput)), true
+
+	case "Query.implant":
+		if e.complexity.Query.Implant == nil {
+			break
+		}
+
+		args, err := ec.field_Query_implant_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Implant(childComplexity, args["implantUuid"].(string)), true
 
 	case "Query.implants":
 		if e.complexity.Query.Implants == nil {
@@ -330,6 +368,8 @@ scalar Time
 
 type Implant {
   uuid: String!
+  hostname: String!
+  ip: String!
   machine_id: String!
   last_seen_at: Time
   heartbeats: [Heartbeat!]!
@@ -344,6 +384,7 @@ enum TaskType {
 
 type Heartbeat {
   uuid: String!
+  hostname: String!
   ip: String!
   port: Int!
   pid: Int!
@@ -362,6 +403,7 @@ type Task {
 
 type Query {
   implants: [Implant!]!
+  implant(implantUuid: String!): Implant!
   tasks(implantUuid: String!): [Task!]!
 }
 
@@ -409,6 +451,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_implant_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["implantUuid"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("implantUuid"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["implantUuid"] = arg0
 	return args, nil
 }
 
@@ -484,6 +541,41 @@ func (ec *executionContext) _Heartbeat_uuid(ctx context.Context, field graphql.C
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UUID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Heartbeat_hostname(ctx context.Context, field graphql.CollectedField, obj *ent.Heartbeat) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Heartbeat",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Hostname, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -659,6 +751,76 @@ func (ec *executionContext) _Implant_uuid(ctx context.Context, field graphql.Col
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UUID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Implant_hostname(ctx context.Context, field graphql.CollectedField, obj *ent.Implant) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Implant",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Hostname, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Implant_ip(ctx context.Context, field graphql.CollectedField, obj *ent.Implant) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Implant",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IP, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -887,6 +1049,48 @@ func (ec *executionContext) _Query_implants(ctx context.Context, field graphql.C
 	res := resTmp.([]*ent.Implant)
 	fc.Result = res
 	return ec.marshalNImplant2ᚕᚖgithubᚗcomᚋBradHackerᚋchungusᚋentᚐImplantᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_implant(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_implant_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Implant(rctx, args["implantUuid"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.Implant)
+	fc.Result = res
+	return ec.marshalNImplant2ᚖgithubᚗcomᚋBradHackerᚋchungusᚋentᚐImplant(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_tasks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2426,6 +2630,11 @@ func (ec *executionContext) _Heartbeat(ctx context.Context, sel ast.SelectionSet
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "hostname":
+			out.Values[i] = ec._Heartbeat_hostname(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "ip":
 			out.Values[i] = ec._Heartbeat_ip(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -2470,6 +2679,16 @@ func (ec *executionContext) _Implant(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = graphql.MarshalString("Implant")
 		case "uuid":
 			out.Values[i] = ec._Implant_uuid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "hostname":
+			out.Values[i] = ec._Implant_hostname(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "ip":
+			out.Values[i] = ec._Implant_ip(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
@@ -2574,6 +2793,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_implants(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "implant":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_implant(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -2985,6 +3218,10 @@ func (ec *executionContext) marshalNHeartbeat2ᚖgithubᚗcomᚋBradHackerᚋchu
 		return graphql.Null
 	}
 	return ec._Heartbeat(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNImplant2githubᚗcomᚋBradHackerᚋchungusᚋentᚐImplant(ctx context.Context, sel ast.SelectionSet, v ent.Implant) graphql.Marshaler {
+	return ec._Implant(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNImplant2ᚕᚖgithubᚗcomᚋBradHackerᚋchungusᚋentᚐImplantᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.Implant) graphql.Marshaler {

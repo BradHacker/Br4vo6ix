@@ -13,6 +13,8 @@ const (
 	FieldID = "id"
 	// FieldUUID holds the string denoting the uuid field in the database.
 	FieldUUID = "uuid"
+	// FieldHostname holds the string denoting the hostname field in the database.
+	FieldHostname = "hostname"
 	// FieldIP holds the string denoting the ip field in the database.
 	FieldIP = "ip"
 	// FieldPort holds the string denoting the port field in the database.
@@ -38,6 +40,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldUUID,
+	FieldHostname,
 	FieldIP,
 	FieldPort,
 	FieldPid,

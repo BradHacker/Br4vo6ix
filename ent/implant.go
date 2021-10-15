@@ -20,6 +20,10 @@ type Implant struct {
 	UUID string `json:"uuid,omitempty"`
 	// MachineID holds the value of the "machine_id" field.
 	MachineID string `json:"machine_id,omitempty"`
+	// Hostname holds the value of the "hostname" field.
+	Hostname string `json:"hostname,omitempty"`
+	// IP holds the value of the "ip" field.
+	IP string `json:"ip,omitempty"`
 	// LastSeenAt holds the value of the "last_seen_at" field.
 	LastSeenAt time.Time `json:"last_seen_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -63,7 +67,7 @@ func (*Implant) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case implant.FieldID:
 			values[i] = new(sql.NullInt64)
-		case implant.FieldUUID, implant.FieldMachineID:
+		case implant.FieldUUID, implant.FieldMachineID, implant.FieldHostname, implant.FieldIP:
 			values[i] = new(sql.NullString)
 		case implant.FieldLastSeenAt:
 			values[i] = new(sql.NullTime)
@@ -99,6 +103,18 @@ func (i *Implant) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field machine_id", values[j])
 			} else if value.Valid {
 				i.MachineID = value.String
+			}
+		case implant.FieldHostname:
+			if value, ok := values[j].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field hostname", values[j])
+			} else if value.Valid {
+				i.Hostname = value.String
+			}
+		case implant.FieldIP:
+			if value, ok := values[j].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field ip", values[j])
+			} else if value.Valid {
+				i.IP = value.String
 			}
 		case implant.FieldLastSeenAt:
 			if value, ok := values[j].(*sql.NullTime); !ok {
@@ -148,6 +164,10 @@ func (i *Implant) String() string {
 	builder.WriteString(i.UUID)
 	builder.WriteString(", machine_id=")
 	builder.WriteString(i.MachineID)
+	builder.WriteString(", hostname=")
+	builder.WriteString(i.Hostname)
+	builder.WriteString(", ip=")
+	builder.WriteString(i.IP)
 	builder.WriteString(", last_seen_at=")
 	builder.WriteString(i.LastSeenAt.Format(time.ANSIC))
 	builder.WriteByte(')')

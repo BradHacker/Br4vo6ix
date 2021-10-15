@@ -26,3 +26,7 @@ textarea.form-control:focus {
   border-color: #707070;
   color: white;
 }
+
+textarea.form-control:read-only {
+  background-color: black;
+}

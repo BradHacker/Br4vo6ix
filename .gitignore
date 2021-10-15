@@ -1,4 +1,7 @@
 *.env
+*.source
 *.sqlite
 .DS_Store
 node_modules
+
+out/*

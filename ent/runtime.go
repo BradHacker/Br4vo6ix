@@ -18,13 +18,13 @@ func init() {
 	heartbeatFields := schema.Heartbeat{}.Fields()
 	_ = heartbeatFields
 	// heartbeatDescCreatedAt is the schema descriptor for created_at field.
-	heartbeatDescCreatedAt := heartbeatFields[4].Descriptor()
+	heartbeatDescCreatedAt := heartbeatFields[5].Descriptor()
 	// heartbeat.DefaultCreatedAt holds the default value on creation for the created_at field.
 	heartbeat.DefaultCreatedAt = heartbeatDescCreatedAt.Default.(func() time.Time)
 	implantFields := schema.Implant{}.Fields()
 	_ = implantFields
 	// implantDescLastSeenAt is the schema descriptor for last_seen_at field.
-	implantDescLastSeenAt := implantFields[2].Descriptor()
+	implantDescLastSeenAt := implantFields[4].Descriptor()
 	// implant.DefaultLastSeenAt holds the default value on creation for the last_seen_at field.
 	implant.DefaultLastSeenAt = implantDescLastSeenAt.Default.(func() time.Time)
 	taskFields := schema.Task{}.Fields()

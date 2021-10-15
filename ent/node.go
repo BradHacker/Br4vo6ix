@@ -52,7 +52,7 @@ func (h *Heartbeat) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     h.ID,
 		Type:   "Heartbeat",
-		Fields: make([]*Field, 5),
+		Fields: make([]*Field, 6),
 		Edges:  make([]*Edge, 1),
 	}
 	var buf []byte
@@ -64,10 +64,18 @@ func (h *Heartbeat) Node(ctx context.Context) (node *Node, err error) {
 		Name:  "uuid",
 		Value: string(buf),
 	}
-	if buf, err = json.Marshal(h.IP); err != nil {
+	if buf, err = json.Marshal(h.Hostname); err != nil {
 		return nil, err
 	}
 	node.Fields[1] = &Field{
+		Type:  "string",
+		Name:  "hostname",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(h.IP); err != nil {
+		return nil, err
+	}
+	node.Fields[2] = &Field{
 		Type:  "string",
 		Name:  "ip",
 		Value: string(buf),
@@ -75,7 +83,7 @@ func (h *Heartbeat) Node(ctx context.Context) (node *Node, err error) {
 	if buf, err = json.Marshal(h.Port); err != nil {
 		return nil, err
 	}
-	node.Fields[2] = &Field{
+	node.Fields[3] = &Field{
 		Type:  "int",
 		Name:  "port",
 		Value: string(buf),
@@ -83,7 +91,7 @@ func (h *Heartbeat) Node(ctx context.Context) (node *Node, err error) {
 	if buf, err = json.Marshal(h.Pid); err != nil {
 		return nil, err
 	}
-	node.Fields[3] = &Field{
+	node.Fields[4] = &Field{
 		Type:  "int",
 		Name:  "pid",
 		Value: string(buf),
@@ -91,7 +99,7 @@ func (h *Heartbeat) Node(ctx context.Context) (node *Node, err error) {
 	if buf, err = json.Marshal(h.CreatedAt); err != nil {
 		return nil, err
 	}
-	node.Fields[4] = &Field{
+	node.Fields[5] = &Field{
 		Type:  "time.Time",
 		Name:  "created_at",
 		Value: string(buf),
@@ -113,7 +121,7 @@ func (i *Implant) Node(ctx context.Context) (node *Node, err error) {
 	node = &Node{
 		ID:     i.ID,
 		Type:   "Implant",
-		Fields: make([]*Field, 3),
+		Fields: make([]*Field, 5),
 		Edges:  make([]*Edge, 2),
 	}
 	var buf []byte
@@ -133,10 +141,26 @@ func (i *Implant) Node(ctx context.Context) (node *Node, err error) {
 		Name:  "machine_id",
 		Value: string(buf),
 	}
-	if buf, err = json.Marshal(i.LastSeenAt); err != nil {
+	if buf, err = json.Marshal(i.Hostname); err != nil {
 		return nil, err
 	}
 	node.Fields[2] = &Field{
+		Type:  "string",
+		Name:  "hostname",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(i.IP); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "string",
+		Name:  "ip",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(i.LastSeenAt); err != nil {
+		return nil, err
+	}
+	node.Fields[4] = &Field{
 		Type:  "time.Time",
 		Name:  "last_seen_at",
 		Value: string(buf),

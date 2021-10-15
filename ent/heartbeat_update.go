@@ -35,6 +35,12 @@ func (hu *HeartbeatUpdate) SetUUID(s string) *HeartbeatUpdate {
 	return hu
 }
 
+// SetHostname sets the "hostname" field.
+func (hu *HeartbeatUpdate) SetHostname(s string) *HeartbeatUpdate {
+	hu.mutation.SetHostname(s)
+	return hu
+}
+
 // SetIP sets the "ip" field.
 func (hu *HeartbeatUpdate) SetIP(s string) *HeartbeatUpdate {
 	hu.mutation.SetIP(s)
@@ -196,6 +202,13 @@ func (hu *HeartbeatUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: heartbeat.FieldUUID,
 		})
 	}
+	if value, ok := hu.mutation.Hostname(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: heartbeat.FieldHostname,
+		})
+	}
 	if value, ok := hu.mutation.IP(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -295,6 +308,12 @@ type HeartbeatUpdateOne struct {
 // SetUUID sets the "uuid" field.
 func (huo *HeartbeatUpdateOne) SetUUID(s string) *HeartbeatUpdateOne {
 	huo.mutation.SetUUID(s)
+	return huo
+}
+
+// SetHostname sets the "hostname" field.
+func (huo *HeartbeatUpdateOne) SetHostname(s string) *HeartbeatUpdateOne {
+	huo.mutation.SetHostname(s)
 	return huo
 }
 
@@ -481,6 +500,13 @@ func (huo *HeartbeatUpdateOne) sqlSave(ctx context.Context) (_node *Heartbeat, e
 			Type:   field.TypeString,
 			Value:  value,
 			Column: heartbeat.FieldUUID,
+		})
+	}
+	if value, ok := huo.mutation.Hostname(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: heartbeat.FieldHostname,
 		})
 	}
 	if value, ok := huo.mutation.IP(); ok {
