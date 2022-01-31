@@ -1,8 +1,8 @@
 package graph
 
 import (
-	"github.com/BradHacker/chungus/ent"
-	"github.com/BradHacker/chungus/graph/generated"
+	"github.com/BradHacker/Br4vo6ix/ent"
+	"github.com/BradHacker/Br4vo6ix/graph/generated"
 
 	"github.com/99designs/gqlgen/graphql"
 )

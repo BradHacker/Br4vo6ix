@@ -5,9 +5,9 @@ package enttest
 import (
 	"context"
 
-	"github.com/BradHacker/chungus/ent"
+	"github.com/BradHacker/Br4vo6ix/ent"
 	// required by schema hooks.
-	_ "github.com/BradHacker/chungus/ent/runtime"
+	_ "github.com/BradHacker/Br4vo6ix/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
 )

@@ -13,8 +13,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/BradHacker/chungus/ent"
-	"github.com/BradHacker/chungus/graph/model"
+	"github.com/BradHacker/Br4vo6ix/ent"
+	"github.com/BradHacker/Br4vo6ix/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )

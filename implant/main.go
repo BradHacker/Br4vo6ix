@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/BradHacker/chungus/pb"
+	"github.com/BradHacker/Br4vo6ix/pb"
 	"github.com/kardianos/service"
 	"github.com/shirou/gopsutil/host"
 

@@ -14,7 +14,7 @@ do
 
   for p in ${PORTS//,/ }
   do
-    echo "socat TCP4-LISTEN:$p,fork TCP:$PROXY_IP:8080 &" >> "out/scripts/$ip-proxy.sh"
+    echo "socat TCP4-LISTEN:$p,fork TCP:$PROXY_IP:4444 &" >> "out/scripts/$ip-proxy.sh"
   done
 done
   
