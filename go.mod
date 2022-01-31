@@ -1,4 +1,4 @@
-module github.com/BradHacker/chungus
+module github.com/BradHacker/Br4vo6ix
 
 go 1.17
 

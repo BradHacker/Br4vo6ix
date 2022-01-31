@@ -8,12 +8,17 @@ This is a golang C2 + Implant that communicates via [Protocol Buffers](https://d
 
 ## Standing this bad boy up
 
-You're going to need two `.env` files, one for the server and one for the frontend.
-
 ```shell
-# .env (need to source this file)
+# I place this line in a .source file and just source it for ease-of-use, but
+#   this just needs to be set in the terminal that runs the C2
 export PWN_URL=http(s)://<url for pwnboard>/generic
 
 # frontend/.env
 REACT_APP_GRAPHQL_URL=http://<Br4vo6x host fqdn/ip>:8080/query
+```
+
+## Compiling the implant
+
+```shell
+
 ```

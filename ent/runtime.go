@@ -5,10 +5,10 @@ package ent
 import (
 	"time"
 
-	"github.com/BradHacker/chungus/ent/heartbeat"
-	"github.com/BradHacker/chungus/ent/implant"
-	"github.com/BradHacker/chungus/ent/schema"
-	"github.com/BradHacker/chungus/ent/task"
+	"github.com/BradHacker/Br4vo6ix/ent/heartbeat"
+	"github.com/BradHacker/Br4vo6ix/ent/implant"
+	"github.com/BradHacker/Br4vo6ix/ent/schema"
+	"github.com/BradHacker/Br4vo6ix/ent/task"
 )
 
 // The init function reads all schema descriptors with runtime code

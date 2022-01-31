@@ -7,11 +7,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/BradHacker/chungus/ent"
-	"github.com/BradHacker/chungus/ent/implant"
-	"github.com/BradHacker/chungus/ent/task"
-	"github.com/BradHacker/chungus/graph/generated"
-	"github.com/BradHacker/chungus/graph/model"
+	"github.com/BradHacker/Br4vo6ix/ent"
+	"github.com/BradHacker/Br4vo6ix/ent/implant"
+	"github.com/BradHacker/Br4vo6ix/ent/task"
+	"github.com/BradHacker/Br4vo6ix/graph/generated"
+	"github.com/BradHacker/Br4vo6ix/graph/model"
 	"github.com/google/uuid"
 )
 

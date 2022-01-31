@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/BradHacker/chungus/ent"
+	"github.com/BradHacker/Br4vo6ix/ent"
 )
 
 // The HeartbeatFunc type is an adapter to allow the use of ordinary
