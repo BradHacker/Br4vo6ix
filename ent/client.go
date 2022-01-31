@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/BradHacker/chungus/ent/migrate"
+	"github.com/BradHacker/Br4vo6ix/ent/migrate"
 
-	"github.com/BradHacker/chungus/ent/heartbeat"
-	"github.com/BradHacker/chungus/ent/implant"
-	"github.com/BradHacker/chungus/ent/task"
+	"github.com/BradHacker/Br4vo6ix/ent/heartbeat"
+	"github.com/BradHacker/Br4vo6ix/ent/implant"
+	"github.com/BradHacker/Br4vo6ix/ent/task"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"

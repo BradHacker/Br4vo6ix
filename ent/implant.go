@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/BradHacker/chungus/ent/implant"
+	"github.com/BradHacker/Br4vo6ix/ent/implant"
 )
 
 // Implant is the model entity for the Implant schema.

@@ -14,9 +14,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/errcode"
-	"github.com/BradHacker/chungus/ent/heartbeat"
-	"github.com/BradHacker/chungus/ent/implant"
-	"github.com/BradHacker/chungus/ent/task"
+	"github.com/BradHacker/Br4vo6ix/ent/heartbeat"
+	"github.com/BradHacker/Br4vo6ix/ent/implant"
+	"github.com/BradHacker/Br4vo6ix/ent/task"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"github.com/vmihailenco/msgpack/v5"
 )

@@ -9,8 +9,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/BradHacker/chungus/ent/predicate"
-	"github.com/BradHacker/chungus/ent/task"
+	"github.com/BradHacker/Br4vo6ix/ent/predicate"
+	"github.com/BradHacker/Br4vo6ix/ent/task"
 )
 
 // TaskDelete is the builder for deleting a Task entity.

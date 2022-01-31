@@ -8,10 +8,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/BradHacker/chungus/ent/heartbeat"
-	"github.com/BradHacker/chungus/ent/implant"
-	"github.com/BradHacker/chungus/ent/predicate"
-	"github.com/BradHacker/chungus/ent/task"
+	"github.com/BradHacker/Br4vo6ix/ent/heartbeat"
+	"github.com/BradHacker/Br4vo6ix/ent/implant"
+	"github.com/BradHacker/Br4vo6ix/ent/predicate"
+	"github.com/BradHacker/Br4vo6ix/ent/task"
 
 	"entgo.io/ent"
 )

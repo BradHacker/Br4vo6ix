@@ -23,6 +23,7 @@ c2:
 ## proxy: Generates the config files to run on each proxy server
 proxy:
 	PORTS=$(PORTS) REDTEAM_IPS=$(REDTEAM_IPS) PROXY_IP=$(PROXY_IP) ./proxy.sh
+	PORTS=$(PORTS) REDTEAM_IPS=$(REDTEAM_IPS) PROXY_IP=$(PROXY_IP) ./unproxy.sh
 
 ## all: Compiles the Br4vo6ix implant for all platforms and the C2 for the current host
 all: win64 linux64 mac64 c2
