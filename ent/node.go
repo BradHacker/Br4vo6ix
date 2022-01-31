@@ -14,9 +14,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/schema"
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/BradHacker/chungus/ent/heartbeat"
-	"github.com/BradHacker/chungus/ent/implant"
-	"github.com/BradHacker/chungus/ent/task"
+	"github.com/BradHacker/Br4vo6ix/ent/heartbeat"
+	"github.com/BradHacker/Br4vo6ix/ent/implant"
+	"github.com/BradHacker/Br4vo6ix/ent/task"
 	"github.com/hashicorp/go-multierror"
 	"golang.org/x/sync/semaphore"
 )

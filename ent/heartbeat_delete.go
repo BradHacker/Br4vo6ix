@@ -9,8 +9,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/BradHacker/chungus/ent/heartbeat"
-	"github.com/BradHacker/chungus/ent/predicate"
+	"github.com/BradHacker/Br4vo6ix/ent/heartbeat"
+	"github.com/BradHacker/Br4vo6ix/ent/predicate"
 )
 
 // HeartbeatDelete is the builder for deleting a Heartbeat entity.

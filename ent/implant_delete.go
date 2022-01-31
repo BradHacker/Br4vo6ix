@@ -9,8 +9,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/BradHacker/chungus/ent/implant"
-	"github.com/BradHacker/chungus/ent/predicate"
+	"github.com/BradHacker/Br4vo6ix/ent/implant"
+	"github.com/BradHacker/Br4vo6ix/ent/predicate"
 )
 
 // ImplantDelete is the builder for deleting a Implant entity.
