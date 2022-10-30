@@ -28,7 +28,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-var IMPLANT_NAME = "Br4vo6ix"
+var PWNBOARD_IDENTIFIER = "Br4vo6ix"
 
 func ListenOnPort(port int) (net.Listener, error) {
 	listener, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", port))
@@ -122,7 +122,7 @@ func HandleConnection(client *ent.Client, c net.Conn, XOR_KEY []byte) {
 		return
 	}
 
-	go pwnboard.SendUpdate(hb.Ip, IMPLANT_NAME)
+	go pwnboard.SendUpdate(hb.Ip, PWNBOARD_IDENTIFIER)
 
 	imp, err := client.Implant.Query().Where(implant.MachineIDEQ(hb.MachineId)).Only(ctx)
 	if ent.IsNotFound(err) {
