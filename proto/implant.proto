@@ -1,6 +1,5 @@
 syntax = "proto3";
 package proto;
-
 import "google/protobuf/timestamp.proto";
 
 option go_package = "./pb";
@@ -8,9 +7,10 @@ option go_package = "./pb";
 message Heartbeat {
   string hostname = 1;
   string ip = 2;
-  string machine_id = 3;
-  int64 pid = 4;
-  google.protobuf.Timestamp sent_at = 5;
+  int64 port = 3;
+  string machine_id = 4;
+  int64 pid = 5;
+  google.protobuf.Timestamp sent_at = 6;
 }
 
 message Task {
