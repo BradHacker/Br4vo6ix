@@ -6,9 +6,11 @@ This is a golang C2 + Implant that communicates via [Protocol Buffers](https://d
 
 > _Note: this tool is still somewhat in development_
 
-## Standing up the C2 Server
+## Deployment
 
-### Pwnboard
+### Standing up the C2 Server
+
+#### Pwnboard
 
 This C2 server is designed to communicate with [Pwnboard](https://github.com/micahjmartin/pwnboard) for competition use. To tell Br4vo6ix where Pwnboard is being hosted, you must pass the url in the `PWN_URL` environment variable.
 
@@ -18,7 +20,7 @@ This C2 server is designed to communicate with [Pwnboard](https://github.com/mic
 export PWN_URL=http(s)://<url for pwnboard>/generic
 ```
 
-### Frontend
+#### Frontend
 
 The frontend needs to know where the GraphQL endpoint is located at, so you must create a `.env` file in the `frontend` folder with the following value:
 
@@ -60,7 +62,7 @@ server {
 }
 ```
 
-## Compiling the implant
+### Compiling the implant
 
 First, you will need an `.env` file to configure the compiled implants. This goes in the root directory.
 
@@ -87,8 +89,40 @@ MACOS_OUT_FILE=<MACOS MACH-O BINARY OUTPUT PATH>
 
 Then, to compile the implant you should be able to run `make all`
 
-## Proxy Servers
+### Proxy Servers
 
 The C2 is designed to sit behind as many proxy servers as you want. We utilize `socat` for our proxy servers, so please install the `socat` package on all proxy server boxes.
 
 The `make all` command will generate proxy scripts in the `out/scripts` directory. The scripts will be labeled `<IP ADDR>-proxy.sh` and `<IP ADDR>-unproxy.sh`. The IP Addresses match to each proxy server and should be run on the proxy servers in order to automatically configure `socat`.
+
+## Development
+
+### Protobuf modifications
+
+In order to regenerate the protobufs, you're going to need `protoc`.
+
+#### Downloading `protoc`
+
+```shell
+# Install the go extensions
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+
+# Install protoc
+PB_REL="https://github.com/protocolbuffers/protobuf/releases"
+curl -LO $PB_REL/download/v3.15.8/protoc-3.15.8-linux-x86_64.zip
+unzip protoc-3.15.8-linux-x86_64.zip -d $HOME/.local
+```
+
+Then add this line to your shell's rc file:
+
+```shell
+export PATH="$PATH:$HOME/.local/bin"
+```
+
+#### Compiling the protobufs
+
+In order to generate the protobuf go code, run the following:
+
+```shell
+protoc --proto_path=proto --go_out=. implant.proto
+```
