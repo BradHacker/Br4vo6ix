@@ -3,9 +3,10 @@ package pwnboard
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Data struct {
@@ -20,7 +21,7 @@ func SendUpdate(ip string, info string) {
 	// 	is sending the data to.
 	PWN_URL, exists := os.LookupEnv("PWN_URL")
 	if !exists {
-		fmt.Println("ERROR: PWN_URL is not set (export PWNURL=<PWNBOARD URL>)")
+		logrus.Warn("PWN_URL is not set (export PWN_URL=<PWNBOARD URL>)")
 		return
 	}
 
@@ -33,16 +34,14 @@ func SendUpdate(ip string, info string) {
 	// Turn data struct into json
 	mData, err := json.Marshal(data)
 	if err != nil {
-		fmt.Println("ERROR: Failed to marshal data.")
-		fmt.Println(err)
+		logrus.Warnf("failed to marshal pwnboard data: %v", err)
 		return
 	}
 
 	// Send json data to pwnboard
 	req, err := http.Post(PWN_URL, "application/json", bytes.NewBuffer(mData))
 	if err != nil {
-		fmt.Println("ERROR: Failed to send a post request to pwnboard.")
-		fmt.Println(err)
+		logrus.Warnf("failed to send a post request to pwnboard: %v", err)
 		return
 	}
 
